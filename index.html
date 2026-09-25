@@ -1,0 +1,94 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#f6f7f9"><title>Freizeitpavillon</title><style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#17202a;background:#f6f7f9}*{box-sizing:border-box}body{margin:0}.app{max-width:900px;margin:auto;padding:28px 22px 60px}.head{text-align:center;margin-bottom:28px}.date{color:#68717d}.head h1{margin:7px 0;font-size:34px}.sub{color:#68717d}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.big{min-height:190px;border:1px solid #d9dde3;border-radius:22px;background:white;font-size:24px;font-weight:700;padding:25px}.big .ico{font-size:60px;display:block;margin-bottom:12px}.borrow .ico{color:#18a558}.count{margin-top:18px;background:white;border:1px solid #d9dde3;border-radius:16px;padding:18px;display:flex;justify-content:space-between}.panel{background:white;border:1px solid #d9dde3;border-radius:20px;padding:22px}.hidden{display:none}.back{border:0;background:none;font-size:18px;padding:10px 0;margin-bottom:10px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}label{font-weight:600}input,select{width:100%;font:inherit;font-size:18px;padding:14px;border:1px solid #cfd4dc;border-radius:12px;margin-top:7px;background:white}.choices{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:12px 0 20px}.choice{min-height:100px;border:2px solid #d9dde3;border-radius:15px;background:white;font-size:16px;font-weight:650;padding:10px}.choice span{font-size:34px;display:block;margin-bottom:5px}.choice.selected{border-color:#188a50;background:#effaf4}.other{margin-top:-6px;margin-bottom:20px}.primary{width:100%;border:0;border-radius:14px;background:#16894f;color:white;font-size:20px;font-weight:750;padding:17px}.loan{width:100%;text-align:left;border:1px solid #d9dde3;background:white;border-radius:15px;padding:17px;margin-bottom:11px;font-size:17px}.loan strong{font-size:19px}.loan small{display:block;color:#68717d;margin-top:5px}.empty{text-align:center;padding:35px;color:#68717d}.success{text-align:center;padding:50px 15px}.success .tick{font-size:70px;color:#18a558}.error{color:#b42318;margin:10px 0}.sectiontitle{margin-top:22px;margin-bottom:4px}
+.teacherlink{display:block;margin:22px auto 0;border:0;background:none;color:#7a828d;font-size:14px;padding:10px}
+.teachergrid{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
+.secondary{border:1px solid #cfd4dc;border-radius:12px;background:white;font-size:17px;font-weight:650;padding:14px 18px}
+.danger{border:1px solid #d92d20;color:#b42318;border-radius:12px;background:white;font-size:16px;font-weight:650;padding:13px 17px}
+.history{width:100%;border-collapse:collapse;margin-top:18px;font-size:15px}
+.history th,.history td{text-align:left;padding:10px 8px;border-bottom:1px solid #e5e7eb;vertical-align:top}
+.history th{color:#68717d;font-size:13px}
+.teacheractions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.note{font-size:14px;color:#68717d;margin-top:12px}@media(max-width:650px){.app{padding:18px 14px 45px}.grid2,.fields{grid-template-columns:1fr}.choices{grid-template-columns:repeat(2,1fr)}.head h1{font-size:28px}.big{min-height:150px}}
+</style></head><body><main class="app">
+<section id="home"><div class="head"><div class="date" id="date"></div><h1>Freizeitpavillon</h1><div class="sub">Ausleihe & Rückgabe</div></div><div class="grid2"><button class="big borrow" id="goBorrow"><span class="ico">✓</span>Ausleihen</button><button class="big" id="goReturn"><span class="ico">↩️</span>Zurückgeben</button></div><div class="count"><span>Aktuell ausgeliehen</span><strong id="count">0</strong></div><button class="teacherlink" id="goTeacher">Lehrerbereich</button></section>
+<section id="borrow" class="hidden"><button class="back">← Zurück</button><div class="panel"><h2>Ausleihen</h2><div class="fields"><label>Name<input id="name" autocomplete="off" placeholder="Vor- und Nachname"></label><label>Klasse<input id="class" autocomplete="off" placeholder="z. B. 7b"></label></div><h3 class="sectiontitle">Was möchtest du ausleihen?</h3><div class="choices" id="choices"></div><div class="other"><label>Anderes Gerät<input id="other" autocomplete="off" placeholder="z. B. Tischtennisschläger"></label></div><h3 class="sectiontitle">Pfand</h3><select id="deposit"><option value="">Bitte auswählen</option><option>Schülerausweis</option><option>Mensakarte</option><option>Sonstiges</option></select><div id="error" class="error"></div><button class="primary" id="save">Ausleihe bestätigen</button></div></section>
+<section id="returns" class="hidden"><button class="back">← Zurück</button><div class="panel"><h2>Zurückgeben</h2><p>Tippe auf deinen Eintrag, wenn du das Gerät zurückgibst.</p><div id="loans"></div></div></section>
+<section id="teacher" class="hidden"><button class="back">← Zurück</button><div class="panel">
+<h2>Lehrerbereich</h2>
+<div id="teacherLogin">
+  <label>Lehrer-PIN<input id="teacherPin" type="password" autocomplete="off" placeholder="PIN eingeben"></label>
+  <div id="pinError" class="error"></div>
+  <button class="primary" id="teacherLoginBtn">Öffnen</button>
+</div>
+<div id="teacherContent" class="hidden">
+  <div class="teachergrid">
+    <label>Tag auswählen<input id="historyDate" type="date"></label>
+    <button class="secondary" id="todayBtn">Heute</button>
+  </div>
+  <div id="historySummary" class="count"><span>Ausleihen an diesem Tag</span><strong>0</strong></div>
+  <div id="historyTable"></div>
+  <div class="teacheractions">
+    <button class="secondary" id="exportCsv">Tagesliste als CSV herunterladen</button>
+    <button class="danger" id="deleteDay">Historie dieses Tages löschen</button>
+  </div>
+  <div class="note">Die Historie wird dauerhaft lokal auf diesem iPad gespeichert und nur gelöscht, wenn du sie im Lehrerbereich manuell löschst. Offene Ausleihen werden ebenfalls nicht automatisch gelöscht.</div>
+</div>
+</div></section>
+<section id="success" class="hidden"><div class="panel success"><div class="tick">✓</div><h2 id="successTitle">Fertig!</h2><p id="successText"></p><button class="primary" id="next">Nächster Schüler</button></div></section>
+</main><script>
+const $=id=>document.getElementById(id), screens=['home','borrow','returns','teacher','success'];
+const items=[['🏀','Basketball'],['⚽','Fußball'],['🎱','Billard'],['🛹','Skateboard'],['🌊','Waveboard'],['🏒','Airhockey'],['🦘','Hüpfstange'],['🚲','Einrad']]; let selected='';
+function load(){try{return JSON.parse(localStorage.getItem('freizeitpavillon_loans')||'[]')}catch(e){return[]}}
+function store(v){localStorage.setItem('freizeitpavillon_loans',JSON.stringify(v))}
+function loadHistory(){try{return JSON.parse(localStorage.getItem('freizeitpavillon_history')||'[]')}catch(e){return[]}}
+function storeHistory(v){
+  localStorage.setItem('freizeitpavillon_history',JSON.stringify(v));
+}
+function localDay(iso){let d=new Date(iso);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function fmtTime(iso){return iso?new Date(iso).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'—'}
+function show(id){screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));if(id==='home')update();if(id==='returns')render()}
+function update(){$('count').textContent=load().length}
+$('date').textContent=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
+items.forEach(([icon,label])=>{let b=document.createElement('button');b.className='choice';b.type='button';b.innerHTML=`<span>${icon}</span>${label}`;b.onclick=()=>{selected=label;$('other').value='';document.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')};$('choices').appendChild(b)});
+$('other').addEventListener('input',()=>{if($('other').value.trim()){selected='';document.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'))}});
+$('goBorrow').onclick=()=>show('borrow');$('goReturn').onclick=()=>show('returns');
+$('goTeacher').onclick=()=>{show('teacher');$('teacherLogin').classList.remove('hidden');$('teacherContent').classList.add('hidden');$('teacherPin').value='';$('pinError').textContent=''};
+document.querySelectorAll('.back').forEach(b=>b.onclick=()=>show('home'));
+$('save').onclick=()=>{let name=$('name').value.trim(),cl=$('class').value.trim(),item=$('other').value.trim()||selected,dep=$('deposit').value;if(!name||!cl||!item||!dep){$('error').textContent='Bitte Name, Klasse, Gerät und Pfand vollständig angeben.';return}$('error').textContent='';let a=load();a.push({id:Date.now(),name,cl,item,dep,date:new Date().toISOString()});store(a);$('successTitle').textContent='Ausleihe gespeichert ✓';$('successText').textContent=`${name} · ${item} · Pfand: ${dep}`;$('name').value='';$('class').value='';$('other').value='';$('deposit').value='';selected='';document.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));show('success')};
+function render(){let a=load(),box=$('loans');box.innerHTML='';if(!a.length){box.innerHTML='<div class="empty">✓ Momentan gibt es keine offenen Ausleihen.</div>';return}a.forEach(l=>{let b=document.createElement('button');b.className='loan';b.type='button';let t=new Date(l.date).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});b.innerHTML=`<strong>${esc(l.name)} · ${esc(l.cl)}</strong><small>${esc(l.item)} · Pfand: ${esc(l.dep)} · ${t} Uhr</small>`;b.onclick=()=>{let returnedAt=new Date().toISOString();store(load().filter(x=>x.id!==l.id));let h=loadHistory();h.push({id:l.id,name:l.name,cl:l.cl,item:l.item,dep:l.dep,borrowedAt:l.date,returnedAt});storeHistory(h);$('successTitle').textContent='Zurückgegeben ✓';$('successText').textContent=`${l.item} von ${l.name} wurde zurückgegeben.`;show('success')};box.appendChild(b)})}
+function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+const TEACHER_PIN='GMS1234!';
+function todayKey(){let d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+$('teacherLoginBtn').onclick=()=>{if($('teacherPin').value!==TEACHER_PIN){$('pinError').textContent='PIN ist nicht korrekt.';return}$('pinError').textContent='';$('teacherLogin').classList.add('hidden');$('teacherContent').classList.remove('hidden');$('historyDate').value=todayKey();renderHistory()};
+$('teacherPin').addEventListener('keydown',e=>{if(e.key==='Enter')$('teacherLoginBtn').click()});
+$('todayBtn').onclick=()=>{$('historyDate').value=todayKey();renderHistory()};
+$('historyDate').onchange=renderHistory;
+
+function dayEntries(day){return loadHistory().filter(x=>localDay(x.borrowedAt)===day)}
+function renderHistory(){
+  let day=$('historyDate').value||todayKey(), rows=dayEntries(day);
+  $('historySummary').querySelector('strong').textContent=rows.length;
+  let box=$('historyTable');
+  if(!rows.length){box.innerHTML='<div class="empty">Für diesen Tag gibt es keine abgeschlossenen Ausleihen.</div>';return}
+  let html='<div style="overflow-x:auto"><table class="history"><thead><tr><th>Name</th><th>Klasse</th><th>Gerät</th><th>Pfand</th><th>Ausleihe</th><th>Rückgabe</th></tr></thead><tbody>';
+  rows.forEach(r=>{html+=`<tr><td>${esc(r.name)}</td><td>${esc(r.cl)}</td><td>${esc(r.item)}</td><td>${esc(r.dep)}</td><td>${fmtTime(r.borrowedAt)}</td><td>${fmtTime(r.returnedAt)}</td></tr>`});
+  box.innerHTML=html+'</tbody></table></div>';
+}
+$('exportCsv').onclick=()=>{
+  let day=$('historyDate').value||todayKey(), rows=dayEntries(day);
+  if(!rows.length){alert('Für diesen Tag gibt es keine Einträge zum Exportieren.');return}
+  let q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  let lines=['Name;Klasse;Gerät;Pfand;Ausleihe;Rückgabe'];
+  rows.forEach(r=>lines.push([r.name,r.cl,r.item,r.dep,fmtTime(r.borrowedAt),fmtTime(r.returnedAt)].map(q).join(';')));
+  let blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  let url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Freizeitpavillon_'+day+'.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+$('deleteDay').onclick=()=>{
+  let day=$('historyDate').value||todayKey(), rows=dayEntries(day);
+  if(!rows.length)return;
+  if(!confirm('Historie für '+day+' wirklich löschen?'))return;
+  storeHistory(loadHistory().filter(x=>localDay(x.borrowedAt)!==day));renderHistory();
+};
+$('next').onclick=()=>show('home');storeHistory(loadHistory());update();
+</script></body></html>
